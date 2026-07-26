@@ -1,0 +1,5 @@
+Metadata-Version: 2.4
+Name: todo-cli
+Version: 0.1.0
+Summary: A small type-hinted to-do list CLI
+Requires-Python: >=3.10
