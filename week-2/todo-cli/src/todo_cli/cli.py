@@ -34,6 +34,9 @@ class ToDoList:
             return True
         return False
 
+    def pending(self) -> list[Task]:
+        return [task for task in self.todos if not task.done]
+
 
 def main() -> None:
     todo_list = ToDoList()
