@@ -8,8 +8,9 @@ class InsufficientFundsError(BankError):
 
 class BankAccount:
 
-    def __init__(self, balance: int = 0) -> None:
+    def __init__(self, balance: int = 0, *, overdraft: int = 0) -> None:
         self.balance: int = balance
+        self.overdraft = overdraft
 
     def deposit(self, amount: int) -> None:
         if amount <= 0:
@@ -19,7 +20,7 @@ class BankAccount:
     def withdraw(self, amount: int) -> None:
         if amount <= 0:
             raise ValueError(f"Withdraw amount must be positive, got {amount}")
-        if amount > self.balance:
+        if amount > self.balance + self.overdraft:
             raise InsufficientFundsError(
                 f"Cannot withdraw {amount}, balance is {self.balance}"
             )
