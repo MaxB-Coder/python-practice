@@ -4,10 +4,24 @@ from django.db import models
 from django.utils import timezone
 
 
-# Create your models here.
+class Category(models.Model):
+    name = models.CharField(max_length=50, unique=True)
+
+    class Meta:
+        ordering = ["name"]
+
+    def __str__(self):
+        return self.name
+
+
 class Question(models.Model):
     question_text = models.CharField(max_length=200)
     pub_date = models.DateTimeField("date published")
+    category = models.ForeignKey(
+        "Category",
+        on_delete=models.PROTECT,
+        related_name="questions",
+    )
 
     def __str__(self):
         return self.question_text
