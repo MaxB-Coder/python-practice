@@ -3,8 +3,10 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 from django.views import generic
+from rest_framework import viewsets
 
 from .models import Category, Choice, Question
+from .serializers import CategorySerializer, ChoiceSerializer, QuestionSerializer
 
 
 class QuestionListView(generic.ListView):
@@ -26,6 +28,11 @@ class QuestionResultsView(generic.DetailView):
     template_name = "polls/question_results.html"
 
 
+class QuestionViewSet(viewsets.ModelViewSet):
+    queryset = Question.objects.prefetch_related("choices").all()
+    serializer_class = QuestionSerializer
+
+
 class CategoryListView(generic.ListView):
     model = Category
     template_name = "polls/category_list.html"
@@ -37,10 +44,20 @@ class CategoryDetailView(generic.DetailView):
     template_name = "polls/category_detail.html"
 
 
+class CategoryViewSet(viewsets.ModelViewSet):
+    queryset = Category.objects.prefetch_related("questions").all()
+    serializer_class = CategorySerializer
+
+
+class ChoiceViewSet(viewsets.ModelViewSet):
+    queryset = Choice.objects.all()
+    serializer_class = ChoiceSerializer
+
+
 def vote(request, question_id):
     question = get_object_or_404(Question, pk=question_id)
     try:
-        selected_choice = question.choice_set.get(pk=request.POST["choice"])
+        selected_choice = question.choices.get(pk=request.POST["choice"])
     except (KeyError, Choice.DoesNotExist):
         # Redisplay the question voting form.
         return render(
